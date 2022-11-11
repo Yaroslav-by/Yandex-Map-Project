@@ -9,6 +9,9 @@ import javax.swing.JScrollPane;
 import javax.swing.JSlider;
 import javax.swing.JTextArea;
 import javax.swing.border.EmptyBorder;
+
+import yandexAPI.MapObject;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -19,6 +22,7 @@ import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import java.awt.Font;
+import java.util.ArrayList;
 import java.awt.Component;
 import java.awt.FlowLayout;
 import javax.swing.JList;
@@ -26,6 +30,7 @@ import javax.swing.AbstractListModel;
 import javax.swing.SwingConstants;
 import javax.swing.JRadioButton;
 import javax.swing.ButtonGroup;
+import javax.swing.DefaultListModel;
 import javax.swing.JCheckBox;
 
 public class YandexMapGUI extends JFrame {
@@ -53,6 +58,9 @@ public class YandexMapGUI extends JFrame {
 	/**
 	 * Create the frame.
 	 */
+	/**
+	 * 
+	 */
 	public YandexMapGUI() {
 		setTitle("Yandex Maps Project");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -76,17 +84,39 @@ public class YandexMapGUI extends JFrame {
 		boxForSearchButtons.add(Box.createRigidArea(new Dimension(30, 30)));
 		
 		tfSearch = new JTextField();
-		tfSearch.setText("search!");
+		tfSearch.setText("Лувр");
 		tfSearch.setFont(new Font("Times New Roman", Font.PLAIN, 16));
 		tfSearch.setToolTipText("Введите, что вы хотите найти");
 		tfSearch.setColumns(35);
 		boxForSearchButtons.add(tfSearch);
 		boxForSearchButtons.add(Box.createRigidArea(new Dimension(30, 30)));
 		
+		JList<MapObject> listForFoundObjects = new JList<MapObject>();
+		DefaultListModel<MapObject> dlm = new DefaultListModel<MapObject>();
+		listForFoundObjects.setFont(new Font("Times New Roman", Font.PLAIN, 16));		
+		JScrollPane scrollPaneList = new JScrollPane(listForFoundObjects);
+		scrollPaneList.setPreferredSize(new Dimension(100, 300));
+		
 		JButton searchButton = new JButton("Поиск");
 		searchButton.setFont(new Font("Times New Roman", Font.PLAIN, 16));
 		searchButton.setPreferredSize(new Dimension(120, 30));
 		searchButton.setFocusable(false);
+		searchButton.addActionListener((e) -> {
+			
+			String query = tfSearch.getText();
+			
+			ArrayList<MapObject> results = MapObject.getMapObjects(MapObject.getResults(query, false), 
+					                                               MapObject.getResults(query, true));
+			
+			for (int i = 0; i < results.size(); i ++) {
+				dlm.add(i, results.get(i));
+//				System.out.println(i.getDescription());
+//				System.out.println();
+			}
+			
+			listForFoundObjects.setModel(dlm);
+			
+		});
 		
 		boxForSearchButtons.add(searchButton);
 		boxForSearchButtons.add(Box.createRigidArea(new Dimension(30, 30)));
@@ -100,20 +130,6 @@ public class YandexMapGUI extends JFrame {
 		JLabel labelResult = new JLabel("Результаты поиска");
 		labelResult.setFont(new Font("Times New Roman", Font.PLAIN, 16));
 		boxForSearch.add(labelResult);
-		
-		JList<String> listForFoundObjects = new JList<String>();
-		listForFoundObjects.setModel(new AbstractListModel<String>() {
-			String[] values = new String[] {"item 1", "item 2", "item 3"};
-			public int getSize() {
-				return values.length;
-			}
-			public String getElementAt(int index) {
-				return values[index];
-			}
-		});
-		listForFoundObjects.setFont(new Font("Times New Roman", Font.PLAIN, 16));		
-		JScrollPane scrollPaneList = new JScrollPane(listForFoundObjects);
-		scrollPaneList.setPreferredSize(new Dimension(100, 300));
 		
 		boxForList.add(scrollPaneList);
 		boxForList.add(Box.createRigidArea(new Dimension(30, 30)));
