@@ -1,12 +1,16 @@
 package yandexAPI;
 
+import java.awt.Image;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.ArrayList;
+
+import javax.imageio.ImageIO;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -22,6 +26,8 @@ public class MapObject {
 	private String coordinates;
 	private String name;
 	private String description;
+	
+	private String request;
 	
 	MapObject(String coordinates, String name, String description) {
 		this.coordinates = coordinates;
@@ -40,6 +46,10 @@ public class MapObject {
 	public String getDescription() {
 		return description;
 	}
+	
+	public String getRequest() {
+		return request;
+	}
 
 	public static String getResults(String query, boolean isGEO) {
 		
@@ -48,7 +58,11 @@ public class MapObject {
 			queryType = TYPE_GEO;
 		else 
 			queryType = TYPE_BIZ;
-				
+			
+		while (query.contains(" ")) {
+			query = query.replaceAll(" ", "+");
+		}
+		
 		try {
 			
 			HttpRequest getRequest = HttpRequest.newBuilder()
@@ -99,8 +113,14 @@ public class MapObject {
 			String name = (String) ((JSONObject) i).getJSONObject("properties").get("name");
 			
 			String description = "Название: " + name + "\n";
-			description = description + "Адрес: "  
+			
+			try {
+				description = description + "Адрес: "  
 						+ (String) ((JSONObject) i).getJSONObject("properties").get("description") + "\n";
+			} catch (JSONException e) {
+				description = description + "Адрес: не обнаружен";
+			}
+			
 			description = description + "Координаты: " + coordinates;
 			
 			MapObject temp = new MapObject(coordinates, name, description);
@@ -176,6 +196,49 @@ public class MapObject {
 		}
 		
 		return mapObjects;
+		
+	}
+	
+	public static Image getImage(String coordinates, int scale, boolean isSatellite, boolean isTraffic) {
+		
+		String typeMap = "";
+		String traffic = "";
+		
+		if (isSatellite) {
+			typeMap = "sat";
+		} else {
+			typeMap = "map";
+		}
+		
+		if (isTraffic) {
+			traffic = ",trf";
+		}
+		
+		try {
+			HttpRequest getRequest = HttpRequest.newBuilder()
+					.uri(new URI("https://static-maps.yandex.ru/1.x/?"
+							+ "l=" + typeMap + traffic
+							+ "&ll=" + coordinates
+							+ "&size=650,450"
+							+ "&z=" + scale
+							+ "&pt=" + coordinates + ",flag"))
+					.GET()
+					.build();
+			
+			HttpClient client = HttpClient.newHttpClient();
+			
+			HttpResponse<InputStream> getResponse = client.send(getRequest, HttpResponse.BodyHandlers.ofInputStream());
+			return ImageIO.read(getResponse.body());
+			
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		
+		return null;
 		
 	}
 	

@@ -26,7 +26,6 @@ import java.util.ArrayList;
 import java.awt.Component;
 import java.awt.FlowLayout;
 import javax.swing.JList;
-import javax.swing.AbstractListModel;
 import javax.swing.SwingConstants;
 import javax.swing.JRadioButton;
 import javax.swing.ButtonGroup;
@@ -38,6 +37,10 @@ public class YandexMapGUI extends JFrame {
 	private JPanel contentPane;
 	private JTextField tfSearch;
 	private final ButtonGroup buttonGroup = new ButtonGroup();
+	private JLabel labelMap;
+	private ImageIcon image;
+	
+	private ArrayList<MapObject> results;
 
 	/**
 	 * Launch the application.
@@ -103,19 +106,49 @@ public class YandexMapGUI extends JFrame {
 		searchButton.setFocusable(false);
 		searchButton.addActionListener((e) -> {
 			
+			try {
+				listForFoundObjects.setSelectedValue(null, false);
+				results.clear();
+				dlm.clear();
+			} catch (NullPointerException e1) {
+				System.out.println("oi");
+			}
+			
 			String query = tfSearch.getText();
 			
-			ArrayList<MapObject> results = MapObject.getMapObjects(MapObject.getResults(query, false), 
-					                                               MapObject.getResults(query, true));
+			results = MapObject.getMapObjects(MapObject.getResults(query, true), 
+					                          MapObject.getResults(query, false));
 			
 			for (int i = 0; i < results.size(); i ++) {
 				dlm.add(i, results.get(i));
-//				System.out.println(i.getDescription());
-//				System.out.println();
 			}
 			
 			listForFoundObjects.setModel(dlm);
 			
+		});
+		
+		JTextArea textAreaInformation = new JTextArea();
+		JSlider slider = new JSlider();
+		JRadioButton radioButtonScheme = new JRadioButton("Схема");
+		JRadioButton radioButtonSatellite = new JRadioButton("Спутник");
+		JCheckBox checkButtonTraffic = new JCheckBox("Пробки");
+		textAreaInformation.setFont(new Font("Times New Roman", Font.PLAIN, 16));
+		textAreaInformation.setEditable(false);
+		JScrollPane scrollPaneInformation = new JScrollPane(textAreaInformation);
+		scrollPaneInformation.setPreferredSize(new Dimension(100, 200));
+		
+		listForFoundObjects.addListSelectionListener((e) -> {
+			
+			textAreaInformation.setText("");
+			textAreaInformation.setText(((JList<MapObject>) e.getSource()).getSelectedValue().getDescription());
+			
+			image = new ImageIcon(
+					MapObject.getImage(((JList<MapObject>) e.getSource()).getSelectedValue().getCoordinates(), 
+					slider.getValue(), 
+					radioButtonSatellite.isSelected(), 
+					checkButtonTraffic.isSelected())); 
+			labelMap.setIcon(image);
+			repaint();
 		});
 		
 		boxForSearchButtons.add(searchButton);
@@ -144,12 +177,6 @@ public class YandexMapGUI extends JFrame {
 		labelInformation.setFont(new Font("Times New Roman", Font.PLAIN, 16));
 		boxForSearch.add(labelInformation);
 		
-		JTextArea textAreaInformation = new JTextArea();
-		textAreaInformation.setFont(new Font("Times New Roman", Font.PLAIN, 16));
-		textAreaInformation.setEditable(false);
-		JScrollPane scrollPaneInformation = new JScrollPane(textAreaInformation);
-		scrollPaneInformation.setPreferredSize(new Dimension(100, 200));
-		
 		boxForTextArea.add(scrollPaneInformation);
 		boxForTextArea.add(Box.createRigidArea(new Dimension(30, 30)));
 		
@@ -165,48 +192,49 @@ public class YandexMapGUI extends JFrame {
 		boxForMap.add(labelMapName);
 		
 		Box boxForLabel = new Box(BoxLayout.X_AXIS);
-		boxForLabel.add(Box.createRigidArea(new Dimension(30, 30)));
 		
-		JLabel labelMap = new JLabel();
+		labelMap = new JLabel();
 		labelMap.setHorizontalAlignment(SwingConstants.CENTER);
-		ImageIcon image = new ImageIcon("111.png");
+		image = new ImageIcon("111.png");
 		labelMap.setIcon(image);
 		labelMap.setBackground(Color.black);
 		boxForLabel.add(labelMap);
-		boxForLabel.add(Box.createRigidArea(new Dimension(30, 30)));
 		
 		boxForMap.add(boxForLabel);
-		boxForMap.add(Box.createRigidArea(new Dimension(30, 15)));
+		boxForMap.add(Box.createRigidArea(new Dimension(30, 30)));
 		
 		Box boxForSlider = new Box(BoxLayout.X_AXIS);
-		boxForSlider.add(Box.createRigidArea(new Dimension(30, 30)));
+		boxForSlider.add(Box.createRigidArea(new Dimension(20, 30)));
 		
-		JSlider slider = new JSlider();
 		slider.setMajorTickSpacing(3);
 		slider.setMinorTickSpacing(1);
-		slider.setValue(12);
+		slider.setValue(15);
 		slider.setMaximum(18);
 		slider.setPaintTicks(true);
 		slider.setPaintLabels(true);
 		slider.setFont(new Font("Times New Roman", Font.PLAIN, 16));
+		slider.addChangeListener((e) -> {
+			
+			
+			
+		});
 		boxForSlider.add(slider);
-		boxForSlider.add(Box.createRigidArea(new Dimension(30, 30)));
+		boxForSlider.add(Box.createRigidArea(new Dimension(20, 30)));
 		
 		boxForMap.add(boxForSlider);
+		boxForMap.add(Box.createRigidArea(new Dimension(30, 20)));
 		
 		Box boxForCheckButtons = new Box(BoxLayout.X_AXIS);
 		
-		JRadioButton radioButtonScheme = new JRadioButton("Схема");
 		radioButtonScheme.setFont(new Font("Times New Roman", Font.PLAIN, 16));
+		radioButtonScheme.setSelected(true);;
 		radioButtonScheme.setFocusable(false);
 		buttonGroup.add(radioButtonScheme);
 		
-		JRadioButton radioButtonSatellite = new JRadioButton("Спутник");
 		radioButtonSatellite.setFont(new Font("Times New Roman", Font.PLAIN, 16));
 		radioButtonSatellite.setFocusable(false);
 		buttonGroup.add(radioButtonSatellite);
 		
-		JCheckBox checkButtonTraffic = new JCheckBox("Пробки");
 		checkButtonTraffic.setFont(new Font("Times New Roman", Font.PLAIN, 16));
 		checkButtonTraffic.setFocusable(false);
 		
