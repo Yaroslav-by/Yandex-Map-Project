@@ -87,9 +87,9 @@ public class YandexMapGUI extends JFrame {
 		boxForSearchButtons.add(Box.createRigidArea(new Dimension(30, 30)));
 		
 		tfSearch = new JTextField();
-		tfSearch.setText("Лувр");
+		tfSearch.setText("пїЅпїЅпїЅпїЅ");
 		tfSearch.setFont(new Font("Times New Roman", Font.PLAIN, 16));
-		tfSearch.setToolTipText("Введите, что вы хотите найти");
+		tfSearch.setToolTipText("пїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ");
 		tfSearch.setColumns(35);
 		boxForSearchButtons.add(tfSearch);
 		boxForSearchButtons.add(Box.createRigidArea(new Dimension(30, 30)));
@@ -100,7 +100,7 @@ public class YandexMapGUI extends JFrame {
 		JScrollPane scrollPaneList = new JScrollPane(listForFoundObjects);
 		scrollPaneList.setPreferredSize(new Dimension(100, 300));
 		
-		JButton searchButton = new JButton("Поиск");
+		JButton searchButton = new JButton("пїЅпїЅпїЅпїЅпїЅ");
 		searchButton.setFont(new Font("Times New Roman", Font.PLAIN, 16));
 		searchButton.setPreferredSize(new Dimension(120, 30));
 		searchButton.setFocusable(false);
@@ -111,7 +111,7 @@ public class YandexMapGUI extends JFrame {
 				results.clear();
 				dlm.clear();
 			} catch (NullPointerException e1) {
-				System.out.println("oi");
+				System.out.println("oi 1");
 			}
 			
 			String query = tfSearch.getText();
@@ -129,9 +129,9 @@ public class YandexMapGUI extends JFrame {
 		
 		JTextArea textAreaInformation = new JTextArea();
 		JSlider slider = new JSlider();
-		JRadioButton radioButtonScheme = new JRadioButton("Схема");
-		JRadioButton radioButtonSatellite = new JRadioButton("Спутник");
-		JCheckBox checkButtonTraffic = new JCheckBox("Пробки");
+		JRadioButton radioButtonScheme = new JRadioButton("пїЅпїЅпїЅпїЅпїЅ");
+		JRadioButton radioButtonSatellite = new JRadioButton("пїЅпїЅпїЅпїЅпїЅпїЅпїЅ");
+		JCheckBox checkButtonTraffic = new JCheckBox("пїЅпїЅпїЅпїЅпїЅпїЅ");
 		textAreaInformation.setFont(new Font("Times New Roman", Font.PLAIN, 16));
 		textAreaInformation.setEditable(false);
 		JScrollPane scrollPaneInformation = new JScrollPane(textAreaInformation);
@@ -139,16 +139,21 @@ public class YandexMapGUI extends JFrame {
 		
 		listForFoundObjects.addListSelectionListener((e) -> {
 			
-			textAreaInformation.setText("");
-			textAreaInformation.setText(((JList<MapObject>) e.getSource()).getSelectedValue().getDescription());
-			
-			image = new ImageIcon(
-					MapObject.getImage(((JList<MapObject>) e.getSource()).getSelectedValue().getCoordinates(), 
-					slider.getValue(), 
-					radioButtonSatellite.isSelected(), 
-					checkButtonTraffic.isSelected())); 
-			labelMap.setIcon(image);
-			repaint();
+			try {
+				textAreaInformation.setText("");
+				textAreaInformation.setText(((JList<MapObject>) e.getSource()).getSelectedValue().getDescription());
+				
+				image = new ImageIcon(
+						MapObject.getImage(((JList<MapObject>) e.getSource()).getSelectedValue().getCoordinates(), 
+						slider.getValue(), 
+						radioButtonSatellite.isSelected(), 
+						checkButtonTraffic.isSelected())); 
+				labelMap.setIcon(image);
+				repaint();
+			} catch (NullPointerException e1) {
+				System.out.println("oi 2");
+			}
+
 		});
 		
 		boxForSearchButtons.add(searchButton);
@@ -160,7 +165,7 @@ public class YandexMapGUI extends JFrame {
 		Box boxForList = new Box(BoxLayout.X_AXIS);
 		boxForList.add(Box.createRigidArea(new Dimension(30, 30)));
 		
-		JLabel labelResult = new JLabel("Результаты поиска");
+		JLabel labelResult = new JLabel("пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ");
 		labelResult.setFont(new Font("Times New Roman", Font.PLAIN, 16));
 		boxForSearch.add(labelResult);
 		
@@ -173,7 +178,7 @@ public class YandexMapGUI extends JFrame {
 		Box boxForTextArea = new Box(BoxLayout.X_AXIS);
 		boxForTextArea.add(Box.createRigidArea(new Dimension(30, 30)));
 		
-		JLabel labelInformation = new JLabel("Информация");
+		JLabel labelInformation = new JLabel("пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ");
 		labelInformation.setFont(new Font("Times New Roman", Font.PLAIN, 16));
 		boxForSearch.add(labelInformation);
 		
@@ -187,7 +192,7 @@ public class YandexMapGUI extends JFrame {
 		Box boxForMap = new Box(BoxLayout.Y_AXIS);
 		contentPane.add(panelForMap, BorderLayout.CENTER);
 		
-		JLabel labelMapName = new JLabel("Карта");
+		JLabel labelMapName = new JLabel("пїЅпїЅпїЅпїЅпїЅ");
 		labelMapName.setFont(new Font("Times New Roman", Font.PLAIN, 16));
 		boxForMap.add(labelMapName);
 		
@@ -215,8 +220,14 @@ public class YandexMapGUI extends JFrame {
 		slider.setFont(new Font("Times New Roman", Font.PLAIN, 16));
 		slider.addChangeListener((e) -> {
 			
-			
-			
+			image = new ImageIcon(
+					MapObject.getImage(listForFoundObjects.getSelectedValue().getCoordinates(), 
+					slider.getValue(), 
+					radioButtonSatellite.isSelected(), 
+					checkButtonTraffic.isSelected())); 
+			labelMap.setIcon(image);
+			repaint();
+	
 		});
 		boxForSlider.add(slider);
 		boxForSlider.add(Box.createRigidArea(new Dimension(20, 30)));
@@ -229,14 +240,47 @@ public class YandexMapGUI extends JFrame {
 		radioButtonScheme.setFont(new Font("Times New Roman", Font.PLAIN, 16));
 		radioButtonScheme.setSelected(true);;
 		radioButtonScheme.setFocusable(false);
+		radioButtonScheme.addChangeListener((e) -> {
+			
+			image = new ImageIcon(
+					MapObject.getImage(listForFoundObjects.getSelectedValue().getCoordinates(), 
+					slider.getValue(), 
+					radioButtonSatellite.isSelected(), 
+					checkButtonTraffic.isSelected())); 
+			labelMap.setIcon(image);
+			repaint();
+			
+		});
 		buttonGroup.add(radioButtonScheme);
 		
 		radioButtonSatellite.setFont(new Font("Times New Roman", Font.PLAIN, 16));
 		radioButtonSatellite.setFocusable(false);
+		radioButtonSatellite.addChangeListener((e) -> {
+			
+			image = new ImageIcon(
+					MapObject.getImage(listForFoundObjects.getSelectedValue().getCoordinates(), 
+					slider.getValue(), 
+					radioButtonSatellite.isSelected(), 
+					checkButtonTraffic.isSelected())); 
+			labelMap.setIcon(image);
+			repaint();
+			
+		});
 		buttonGroup.add(radioButtonSatellite);
 		
 		checkButtonTraffic.setFont(new Font("Times New Roman", Font.PLAIN, 16));
 		checkButtonTraffic.setFocusable(false);
+		checkButtonTraffic.addChangeListener((e) -> {
+			
+			image = new ImageIcon(
+					MapObject.getImage(listForFoundObjects.getSelectedValue().getCoordinates(), 
+					slider.getValue(), 
+					radioButtonSatellite.isSelected(), 
+					checkButtonTraffic.isSelected())); 
+			labelMap.setIcon(image);
+			repaint();
+			
+		});
 		
 		boxForCheckButtons.add(radioButtonScheme);
 		boxForCheckButtons.add(Box.createRigidArea(new Dimension(70, 30)));
