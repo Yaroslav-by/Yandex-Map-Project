@@ -112,16 +112,16 @@ public class MapObject {
 			
 			String name = (String) ((JSONObject) i).getJSONObject("properties").get("name");
 			
-			String description = "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ: " + name + "\n";
+			String description = "Название: " + name + "\n";
 			
 			try {
-				description = description + "пїЅпїЅпїЅпїЅпїЅ: "  
+				description = description + "Адрес: "  
 						+ (String) ((JSONObject) i).getJSONObject("properties").get("description") + "\n";
 			} catch (JSONException e) {
-				description = description + "пїЅпїЅпїЅпїЅпїЅ: пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ";
+				description = description + "Адрес: не определен";
 			}
 			
-			description = description + "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ: " + coordinates;
+			description = description + "Координаты: " + coordinates;
 			
 			MapObject temp = new MapObject(coordinates, name, description);
 			mapObjects.add(temp);
@@ -137,58 +137,54 @@ public class MapObject {
 														  .toString();
 			coordinates = coordinates.substring(1, coordinates.length() - 1);
 			
-			String name = (String) ((JSONObject) i).getJSONObject("properties").getString("name") + " (пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ)";
+			String name = (String) ((JSONObject) i).getJSONObject("properties").getString("name") + " (Организация)";
 			
-			String description = "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ: " + (String) ((JSONObject) i).getJSONObject("properties").getString("name") + "\n";
+			String description = "Название: " + (String) ((JSONObject) i).getJSONObject("properties").getString("name") + "\n";
 			
-			//пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 			try {
-				description = description + "пїЅпїЅпїЅпїЅпїЅ: " + (String) ((JSONObject) i).getJSONObject("properties")
+				description = description + "Адрес: " + (String) ((JSONObject) i).getJSONObject("properties")
 																				 .getJSONObject("CompanyMetaData")
 																				 .get("address") + "\n";
 			} catch (JSONException e) {
-				description = description + "пїЅпїЅпїЅпїЅпїЅ: пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ\n";
+				description = description + "Адрес: не определен\n";
 			}
 			
-			//пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ 
 			try {
 				JSONArray phonesArray = ((JSONObject) i).getJSONObject("properties")
 													    .getJSONObject("CompanyMetaData")
 													    .getJSONArray("Phones");
-				description = description + "пїЅпїЅпїЅ. пїЅпїЅпїЅпїЅпїЅпїЅпїЅ: ";
+				description = description + "Моб. телефон: ";
 				for (Object j : phonesArray) {
 					description = description + (String) ((JSONObject) j).get("formatted") + "; ";
 				}
 				description = description + "\n";
 			} catch (JSONException e) {
-				description = description + "пїЅпїЅпїЅ. пїЅпїЅпїЅпїЅпїЅпїЅпїЅ: пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ" + "\n";
+				description = description + "Моб. телефон: не определен" + "\n";
 			}
 			
-			//пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 			try {
-				description = description + "пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ: " + (String) ((JSONObject) i).getJSONObject("properties")
+				description = description + "Время работы: " + (String) ((JSONObject) i).getJSONObject("properties")
 																						.getJSONObject("CompanyMetaData")
 					        															.getJSONObject("Hours") 
 					        															.get("text") + "\n";
 			} catch (JSONException e) {
-				description = description + "пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ: пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ" + "\n";
+				description = description + "Время работы: не определено" + "\n";
 			}
 			
-			//пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 			try {
 				JSONArray categoryArray = ((JSONObject) i).getJSONObject("properties")
 													    .getJSONObject("CompanyMetaData")
 													    .getJSONArray("Categories");
-				description = description + "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ: ";
+				description = description + "Категории: ";
 				for (Object j : categoryArray) {
 					description = description + (String) ((JSONObject) j).get("name") + "; ";
 				}
 				description = description + "\n";
 			} catch (JSONException e) {
-				description = description + "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ: пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ" + "\n";
+				description = description + "Категории: не определены" + "\n";
 			}
 
-			description = description + "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ: " + coordinates;
+			description = description + "Координаты: " + coordinates;
 			
 			MapObject temp = new MapObject(coordinates, name, description);
 			mapObjects.add(temp);
